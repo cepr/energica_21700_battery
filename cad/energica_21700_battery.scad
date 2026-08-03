@@ -116,7 +116,7 @@ module module_60() {
   nickel_extend = 2.5;
 
   // Top Nickel
-  *for(y1=[-0.5:0.5], y2=[-2:2]) {
+  for (y1 = [-0.5:0.5], y2 = [-2:2]) {
     translate(
       [
         -nickel_length / 2,
@@ -137,7 +137,7 @@ module module_60() {
   }
 
   // Top copper
-  module top_copper() {
+  module bottom_copper() {
     mirror([0, 1, 0]) {
       for (x = [-2.5:2.5]) {
         translate(
@@ -169,13 +169,13 @@ module module_60() {
       }
     }
   }
-  *top_copper();
+  rotate([180, 0, 0]) bottom_copper();
 
   // Cells
   *cell_60();
 
   // Bottom copper
-  *rotate([180, 0, 0]) top_copper();
+  bottom_copper();
 
   // Bottom Nickel
   *for(y1=[-0.5:0.5], y2=[-2:2]) {
@@ -465,7 +465,7 @@ module half_holder(variant = "A") {
     ]
   ) {
     difference() {
-      base_holder();
+      render(convexity=10) base_holder();
 
       // Pockets for the copper strips
       for (x = [-2.5:2.5]) {
@@ -588,6 +588,50 @@ module nuts() {
   }
 }
 
+module separator() {
+  difference() {
+    cube(
+      [
+        5 * d + copper_width,
+        cell_isolation,
+        h + cell_spacing_vertical - 1,
+      ], center=true
+    );
+    for (x = [-2.5:2.5], z = [-1, 1]) {
+      translate([x * d, 0, z * (-50 - h / 2)])
+        cube([copper_width + 0.1, 100, 100], center=true);
+    }
+    for (x = [-2:2], z = [-1, 1]) {
+      translate(
+        [
+          x * d,
+          0,
+          z * (-50 - h / 2 + holder_pocket_height + 0.5),
+        ]
+      ) {
+        difference() {
+          cube(
+            [
+              d - copper_width,
+              100,
+              100,
+            ], center=true
+          );
+          cube([d - copper_width - 3, 100, 100], center=true);
+        }
+      }
+    }
+  }
+}
+
+module separators() {
+  for (y = [-3:2:3]) {
+    translate([0, y * (d + cell_isolation / 2), 0]) {
+      separator();
+    }
+  }
+}
+
 // Labels
 translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
 
@@ -595,10 +639,15 @@ translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
 intersection() {
   *translate([500 - 0.5 * d, 0, 0])
     cube([1000, 1000, 1000], center=true);
+  module_60();
   *module_120();
   *base_holder();
-  half_holder(variant="A");
+  *half_holder(variant="A");
 }
+
+separators();
+
+!separator();
 
 *EIG();
 
