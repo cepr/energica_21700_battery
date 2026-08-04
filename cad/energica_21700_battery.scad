@@ -171,6 +171,9 @@ module module_60() {
   }
   rotate([180, 0, 0]) bottom_copper();
 
+  // Top inner holder
+  inner_holder();
+
   // Cells
   *cell_60();
 
@@ -340,6 +343,91 @@ module passage_with_chanfrain(width) {
 
 module nickel_passage_with_chanfrain() {
   passage_with_chanfrain(nickel_width);
+}
+
+ring_isolation_thickness = 0.2;
+
+module inner_holder(variant = 0) {
+  intersection() {
+    difference() {
+      union() {
+        h = ring_isolation_thickness + holder_pocket_height;
+        for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
+          translate(
+            [
+              x * d,
+              y1 * (d + cell_isolation) + y2 * (d + d + cell_isolation),
+            ]
+          ) {
+            cylinder(d=d + holder_walls * 2, h=h);
+          }
+        }
+        for (x = [-2.5:2.5]) {
+          translate([x * d, 0, h / 2]) {
+            cube(
+              [
+                d - copper_width - 0.2 * 2 + holder_walls * 2,
+                10 * d + 4 * cell_isolation,
+                h,
+              ], center=true
+            );
+          }
+        }
+      }
+
+      // What to remove
+      for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
+        // Pocket for the cells
+        translate(
+          [
+            x * d,
+            y1 * (d + cell_isolation) + y2 * (d + d + cell_isolation),
+            ring_isolation_thickness,
+          ]
+        ) {
+          cylinder(d=d, h=100);
+        }
+        // Holes to spot weld cell terminals
+        if ( (y2 + variant) % 2) {
+          // Ring hole for the positive side
+          translate(
+            [
+              x * d,
+              y1 * d + y2 * (d + d + cell_isolation),
+              ring_isolation_thickness,
+            ]
+          ) {
+            cylinder(d=12, h=100, center=true);
+          }
+        } else {
+          // Square hole for the negative side
+          translate(
+            [
+              x * d,
+              y1 * d + y2 * (d + d + cell_isolation),
+              0,
+            ]
+          ) {
+            cube(
+              [
+                copper_width + 0.2,
+                d * 0.6,
+                2 * ring_isolation_thickness + 0.05,
+              ], center=true
+            );
+          }
+        }
+      }
+    }
+
+    cube(
+      [
+        6 * d - 0.1,
+        10 * d + 4 * cell_isolation - 0.1,
+        100,
+      ], center=true
+    );
+  }
 }
 
 module base_holder() {
@@ -592,34 +680,14 @@ module separator() {
   difference() {
     cube(
       [
-        5 * d + copper_width,
+        5 * d,
         cell_isolation,
-        h + cell_spacing_vertical - 1,
+        h,
       ], center=true
     );
     for (x = [-2.5:2.5], z = [-1, 1]) {
-      translate([x * d, 0, z * (-50 - h / 2)])
-        cube([copper_width + 0.1, 100, 100], center=true);
-    }
-    for (x = [-2:2], z = [-1, 1]) {
-      translate(
-        [
-          x * d,
-          0,
-          z * (-50 - h / 2 + holder_pocket_height + 0.5),
-        ]
-      ) {
-        difference() {
-          cube(
-            [
-              d - copper_width,
-              100,
-              100,
-            ], center=true
-          );
-          cube([d - copper_width - 3, 100, 100], center=true);
-        }
-      }
+      translate([x * d, 0, z * (50 + h / 2 - holder_pocket_height - 0.5)])
+        cube([copper_width + 2 * strips_clearance + holder_walls * 2, 100, 100], center=true);
     }
   }
 }
@@ -639,16 +707,27 @@ translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
 intersection() {
   *translate([500 - 0.5 * d, 0, 0])
     cube([1000, 1000, 1000], center=true);
-  module_60();
+  *module_60();
   *module_120();
   *base_holder();
   *half_holder(variant="A");
 }
 
-separators();
+*cell_60();
 
-!separator();
+*for(y=[0], a=[0, 180]) {
+  translate([0, y * (d + cell_isolation), 0])
+    rotate([a, 0, 0]) {
+      translate([0, 0, -h / 2 - ring_isolation_thickness])
+        inner_holder(variant=a ? 1 : 0);
+    }
+}
+
+*separator();
+*separators();
 
 *EIG();
 
 *cube([137, 10, 10], center=true);
+
+!inner_holder(1);
