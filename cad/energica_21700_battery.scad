@@ -348,7 +348,7 @@ module nickel_passage_with_chanfrain() {
   passage_with_chanfrain(nickel_width);
 }
 
-ring_isolation_thickness = 0.2;
+ring_isolation_thickness = 0.3;
 
 module inner_holder() {
   intersection() {
@@ -678,20 +678,34 @@ module nuts() {
   }
 }
 
-module separator() {
+module separator2d() {
   difference() {
-    cube(
+    square(
       [
-        5 * d,
-        cell_isolation,
+        5.55 * d,
         h,
       ], center=true
     );
-    for (x = [-2.5:2.5], z = [-1, 1]) {
-      translate([x * d, 0, z * (50 + h / 2 - holder_pocket_height - 0.5)])
-        cube([copper_width + 2 * strips_clearance + holder_walls * 2, 100, 100], center=true);
+    for (x = [-2.5:2.5], y = [-1, 1]) {
+      translate(
+        [
+          x * d,
+          y * (50 + h / 2 - holder_pocket_height - 0.5),
+        ]
+      )
+        square(
+          [
+            copper_width + 2 * strips_clearance + holder_walls * 2 + 0.3,
+            100,
+          ], center=true
+        );
     }
   }
+}
+
+module separator() {
+  rotate([90, 0, 0])
+    linear_extrude(height=cell_isolation, center=true) separator2d();
 }
 
 module separators() {
@@ -702,27 +716,12 @@ module separators() {
   }
 }
 
-// Labels
-translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
-
-// Elements
-intersection() {
-  translate([-500 + d / 2, 0, 0])
-    cube([1000, 1000, 1000], center=true);
-  *module_60();
-  *module_120();
-  *base_holder();
-  *half_holder(variant="A");
-  *base_holder();
-  mirror([0, 0, 1]) inner_holder();
-}
-
 module copper_cell() {
   module half() {
     copper_strip(length=4)
-      copper_bend(angle=18.5, radius=2)
-        copper_bend(angle=-18.5, radius=2)
-          copper_strip(length=5.5);
+      copper_bend(angle=22.5, radius=2)
+        copper_bend(angle=-22.5, radius=2)
+          copper_strip(length=5.5 + 1);
   }
   union() {
     half();
@@ -730,15 +729,123 @@ module copper_cell() {
   }
 }
 
-for (y1 = [-0.5:0.5], y2 = [-2:2]) {
-  translate([0, y1 * d + y2 * (d + d + cell_isolation), 0]) {
-    translate([d / 2, 0, copper_plate_thickness / 2 - ring_isolation_thickness])
-      copper_cell();
-    translate([0, 0, nickel_plate_thickness / 2])
-      rotate([0, 0, -90])
-        nickel_strip(length=20);
+module simple_shell() {
+  height = h * 4 + cell_spacing_vertical * 3;
+  difference() {
+    union() {
+      difference() {
+        cube(
+          [
+            case_dim_x,
+            case_dim_y,
+            height,
+          ],
+          center=true
+        );
+        cube(
+          [
+            6 * d + 0.1,
+            10 * d + 4 * cell_isolation + 0.1,
+            height + 1,
+          ], center=true
+        );
+      }
+      // Mounting hole columns
+      for (x = [-3:2:3], y = [-5, 5]) {
+        translate([x * d, y * (d + cell_isolation / 2), 0])
+          cylinder(h=height, d=7.5, center=true);
+      }
+      for (x = [-3, 3], y = [-3:2:3]) {
+        translate([x * d, y * (d + cell_isolation / 2), 0])
+          cylinder(h=height, d=7.5, center=true);
+      }
+    }
+    // Mounting holes
+    for (x = [-3:2:3], y = [-5:2:5]) {
+      translate(
+        [
+          x * d,
+          y * (d + cell_isolation / 2),
+        ]
+      ) {
+        cylinder(h=height + 1, d=4.5, center=true); // M4 rod
+      }
+    }
   }
 }
+
+module vertical_spacer() {
+  intersection() {
+    union() {
+      for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
+        translate([x * d, y1 * d + y2 * (d + d + cell_isolation)])
+          cylinder(h=100, d=d + holder_walls * 2, center=true);
+      }
+      for (x = [-2.5:2.5]) {
+        translate([x * d, 0, h / 2]) {
+          cube(
+            [
+              d - copper_width - 0.2 * 2 + holder_walls * 2,
+              10 * d + 4 * cell_isolation,
+              100,
+            ], center=true
+          );
+        }
+      }
+    }
+    cube(
+      [
+        6 * d - 0.1,
+        10 * d + 4 * cell_isolation - 0.1,
+        5,
+      ], center=true
+    );
+  }
+}
+
+echo("x wall thickness: ", (case_dim_x - (6 * d)) / 2);
+echo("y wall thickness: ", (case_dim_y - (10 * d + 4 * cell_isolation)) / 2);
+
+// Labels
+translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
+
+// Tool to bend press the copper strips
+module copper_press() {
+  difference() {
+    cube([copper_width + 2, 96, 8], center=true);
+    for (y = [0, d, 2 * d + cell_isolation, 3 * d + cell_isolation]) {
+      translate([0, y - 29, -ring_isolation_thickness / 2]) {
+        scale([2, 1, 1]) copper_cell();
+      }
+    }
+    translate([0, -48 + 4, 0])
+      rotate([0, 90, 0])
+        cylinder(h=100, d=6, center=true);
+  }
+}
+
+// Elements
+*intersection() {
+  *translate([-500 + d / 2, 0, 0])
+    cube([1000, 1000, 1000], center=true);
+  *module_60();
+  *module_120();
+  *base_holder();
+  *mirror([0, 0, 1]) inner_holder();
+}
+simple_shell();
+//vertical_spacer();
+inner_holder();
+
+// for (y1 = [-0.5:0.5], y2 = [-2:2]) {
+//   translate([0, y1 * d + y2 * (d + d + cell_isolation), 0]) {
+//     translate([d / 2, 0, copper_plate_thickness / 2 - ring_isolation_thickness])
+//       copper_cell();
+//     translate([0, 0, nickel_plate_thickness / 2])
+//       rotate([0, 0, -90])
+//         nickel_strip(length=20);
+//   }
+// }
 
 *cell_60();
 
@@ -749,6 +856,9 @@ for (y1 = [-0.5:0.5], y2 = [-2:2]) {
         inner_holder();
     }
 }
+
+*translate([0, 0, (h + cell_spacing_vertical) / 2])
+  separators();
 
 !separator();
 
