@@ -750,11 +750,8 @@ for (y1 = [-0.5:0.5], y2 = [-2:2]) {
     }
 }
 
-*separator();
-*separators();
+!separator();
 
 *EIG();
 
 *cube([137, 10, 10], center=true);
-
-!inner_holder();
