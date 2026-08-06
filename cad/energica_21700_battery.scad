@@ -729,6 +729,20 @@ module copper_cell() {
   }
 }
 
+module nickel_contact() {
+  module half() {
+    nickel_strip(length=4)
+      nickel_bend(angle=16, radius=2)
+        nickel_bend(angle=-16, radius=2)
+          nickel_strip(length=6);
+  }
+  rotate([0, 0, 90])
+    union() {
+      half();
+      mirror([0, 1, 0]) half();
+    }
+}
+
 module simple_shell() {
   height = h * 4 + cell_spacing_vertical * 3;
   difference() {
@@ -824,28 +838,50 @@ module copper_press() {
   }
 }
 
+// Tool to bend press the nickel strips
+module nickel_press() {
+  difference() {
+    translate([-3.5, 0, 0])
+      cube([6 * d + 7, nickel_width + 2, 8], center=true);
+    for (x = [-2.5:2.5]) {
+      translate([x * d, 0, 0]) {
+        scale([1, 2, 2]) nickel_contact();
+      }
+    }
+    translate([-3 * d - 3, 0, 0])
+      rotate([90, 0, 0])
+        cylinder(h=100, d=6, center=true);
+  }
+}
+
+module inner_holder_with_strips() {
+  mirror([0, 0, -1])
+    inner_holder();
+  for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
+    translate([x * d, y1 * d + y2 * (d + d + cell_isolation), 0]) {
+      translate([0, 0, copper_plate_thickness / 2 - ring_isolation_thickness])
+        copper_cell();
+      translate([0, 0, nickel_plate_thickness / 2 - ring_isolation_thickness + copper_plate_thickness])
+        nickel_contact();
+    }
+  }
+}
+
 // Elements
-*intersection() {
-  *translate([-500 + d / 2, 0, 0])
+intersection() {
+  translate([0, -500 + d / 2, 0])
     cube([1000, 1000, 1000], center=true);
   *module_60();
   *module_120();
   *base_holder();
   *mirror([0, 0, 1]) inner_holder();
+  inner_holder_with_strips();
 }
-simple_shell();
+*simple_shell();
 //vertical_spacer();
-inner_holder();
 
-// for (y1 = [-0.5:0.5], y2 = [-2:2]) {
-//   translate([0, y1 * d + y2 * (d + d + cell_isolation), 0]) {
-//     translate([d / 2, 0, copper_plate_thickness / 2 - ring_isolation_thickness])
-//       copper_cell();
-//     translate([0, 0, nickel_plate_thickness / 2])
-//       rotate([0, 0, -90])
-//         nickel_strip(length=20);
-//   }
-// }
+*nickel_contact();
+!nickel_press();
 
 *cell_60();
 
@@ -861,7 +897,8 @@ inner_holder();
   separators();
 
 *separator();
-!copper_press();
+*copper_press();
+*nickel_press();
 
 *EIG();
 
