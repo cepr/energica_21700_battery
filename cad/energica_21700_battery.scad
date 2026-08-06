@@ -815,7 +815,7 @@ module copper_press() {
     cube([copper_width + 2, 96, 8], center=true);
     for (y = [0, d, 2 * d + cell_isolation, 3 * d + cell_isolation]) {
       translate([0, y - 29, -ring_isolation_thickness / 2]) {
-        scale([2, 1, 1]) copper_cell();
+        scale([2, 1, 2]) copper_cell();
       }
     }
     translate([0, -48 + 4, 0])
@@ -860,7 +860,8 @@ inner_holder();
 *translate([0, 0, (h + cell_spacing_vertical) / 2])
   separators();
 
-!separator();
+*separator();
+!copper_press();
 
 *EIG();
 
