@@ -789,31 +789,65 @@ module simple_shell() {
 }
 
 module vertical_spacer() {
-  intersection() {
-    union() {
-      for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
-        translate([x * d, y1 * d + y2 * (d + d + cell_isolation)])
-          cylinder(h=100, d=d + holder_walls * 2, center=true);
-      }
-      for (x = [-2.5:2.5]) {
-        translate([x * d, 0, h / 2]) {
-          cube(
-            [
-              d - copper_width - 0.2 * 2 + holder_walls * 2,
-              10 * d + 4 * cell_isolation,
-              100,
-            ], center=true
-          );
+  difference() {
+    intersection() {
+      union() {
+        for (x = [-2.5:2.5], y1 = [-0.5:0.5], y2 = [-2:2]) {
+          translate([x * d, y1 * d + y2 * (d + d + cell_isolation)])
+            cylinder(h=100, d=d + holder_walls * 2, center=true);
+        }
+        for (x = [-2.5:2.5]) {
+          translate([x * d, 0, h / 2]) {
+            cube(
+              [
+                d - copper_width - 0.2 * 2 + holder_walls * 2,
+                10 * d + 4 * cell_isolation,
+                100,
+              ], center=true
+            );
+          }
         }
       }
+      cube(
+        [
+          6 * d - 0.1,
+          10 * d + 4 * cell_isolation - 0.1,
+          1.2,
+        ], center=true
+      );
     }
-    cube(
-      [
-        6 * d - 0.1,
-        10 * d + 4 * cell_isolation - 0.1,
-        5,
-      ], center=true
-    );
+    // Copper strips pockets
+    for (x = [-2.5:2.5]) {
+      translate([x * d, 0, 50]) {
+        cube(
+          [
+            copper_width + 2 * strips_clearance,
+            1000,
+            100,
+          ], center=true
+        );
+      }
+      translate([x * d, 4 * d + 2 * cell_isolation, 0])
+        cube(
+          [
+            copper_width + 2 * strips_clearance,
+            1.7 * d,
+            100,
+          ], center=true
+        );
+    }
+    // Nickel strips pockets
+    for (y1 = [-0.5:0.5], y2 = [-2:2]) {
+      translate([0, y1 * d + y2 * (d + d + cell_isolation), 50]) {
+        cube(
+          [
+            1000,
+            nickel_width + 2 * strips_clearance,
+            100,
+          ], center=true
+        );
+      }
+    }
   }
 }
 
@@ -881,7 +915,7 @@ intersection() {
 //vertical_spacer();
 
 *nickel_contact();
-!nickel_press();
+*nickel_press();
 
 *cell_60();
 
@@ -895,6 +929,8 @@ intersection() {
 
 *translate([0, 0, (h + cell_spacing_vertical) / 2])
   separators();
+
+!vertical_spacer();
 
 *separator();
 *copper_press();
