@@ -14,8 +14,8 @@ module module_120() {
       }
   }
   large_spacer();
-  for (y = [2.9, 1.8]) {
-    translate([0, -0.5 * base_plate_dim_y + y, 0])
+  for (y = [0, busbar_thickness + copper_plate_thickness]) {
+    translate([0, -0.5 * base_plate_dim_y + busbar_cutout_depth - y, 0])
       rotate([90, 0, 0])
         intermediate_busbar();
   }

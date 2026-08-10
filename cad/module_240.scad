@@ -4,6 +4,7 @@ use <large_spacer.scad>
 use <intermediate_busbar.scad>
 use <panels.scad>
 use <outlet.scad>
+use <inlet.scad>
 
 /**
  * 240 cells as a 6x10x4 pack, along the z axis, the pack centered at the origin.
@@ -21,9 +22,14 @@ module module_240() {
       rotate([-90, 0, 0])
         intermediate_busbar();
   }
-  %panels();
+  panels();
   translate([0, 0, -module_120_height - large_spacer_stack_height])
     rotate([180, 0, 0]) outlet();
+
+  
+  translate([0, 0, module_120_height + 0.5 * large_spacer_stack_height])
+    rotate([0, 0, 180])
+      inlet();
 }
 
 module_240();

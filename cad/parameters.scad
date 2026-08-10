@@ -60,14 +60,10 @@ large_spacer_stack_height = 7;
 
 module_120_height = module_60_height * 2 + large_spacer_stack_height + exploded;
 
-module_240_height = module_120_height * 2 + large_spacer_stack_height + exploded;
-
-outlet_height = 10;
-
-inlet_height = 20 + external_walls;
+module_240_height = module_120_height * 2 + large_spacer_stack_height * 3 + exploded;
 
 inlet_walls = 3;
 
-panel_height = module_240_height + inlet_height;
-
 ring_terminal_cutout_depth = 3;
+busbar_cutout_depth = 3;
+busbar_thickness = 1;

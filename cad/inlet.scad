@@ -1,63 +1,129 @@
 include <parameters.scad>
-use <base_plate.scad>
-use <busbar.scad>
+use <large_spacer.scad>
+use <terminal_busbar.scad>
+use <fan_92x92x38.scad>
 
 // https://nmbtc.com/wp-content/uploads/parts/documents/12038VE-12R-GUE-4%20data%20sheet.pdf
-module fan() {
-  difference() {
-    cube([120, 120, 38], center=true);
-    for (x = [-105 / 2, 105 / 2], y = [-105 / 2, 105 / 2]) {
-      translate([x, y, 0])
-        cylinder(h=100, d=4.3, center=true);
-    }
-  }
-}
+// module fan() {
+//   difference() {
+//     cube([120, 120, 38], center=true);
+//     for (x = [-105 / 2, 105 / 2], y = [-105 / 2, 105 / 2]) {
+//       translate([x, y, 0])
+//         cylinder(h=100, d=4.3, center=true);
+//     }
+//   }
+// }
 
-module fan_panel() {
-  linear_extrude(height=100, center=true, convexity=10) {
-    intersection() {
-      square([117.6, 117.6], center=true);
-      circle(d=136);
-    }
-    for (x = [-105 / 2, 105 / 2], y = [-105 / 2, 105 / 2]) {
-      translate([x, y])
-        circle(d=4.3);
-    }
-  }
-}
+airgap = 15;
 
 module inlet() {
   ox = case_dim_x - 2 * external_walls;
   oy = case_dim_y - 2 * external_walls;
 
+  module for_each_hole_bottom() {
+    for (x = [-0.5, 0.5], y = [-1.5:1.5]) {
+      translate([x * 5 * d, y * (3 * d + 1.5 * cell_isolation)])
+        children();
+    }
+  }
+
+  module for_each_hole_top() {
+    for (x = [-0.5, 0.5], y1 = [-0.5, 0.5], y2 = [-0.5, 0.5]) {
+      translate([x * 82.5, y1 * 92 + y2 * 82.5])
+        children();
+    }
+  }
+
   translate([0, 0, large_spacer_stack_height / 2])
     difference() {
-      base_plate(height=large_spacer_stack_height, center=true, shorter_end=false);
-      // Inserts
-      for (x = [-0.5, 0.5], y1 = [-.5:0.5], y2 = [-2:2]) {
-        translate([x * base_plate_dim_x, y1 * d + y2 * (d + d + cell_isolation), 0])
-          rotate([0, 90, 0])
-            cylinder(h=m4_insert_length * 2, d=m4_insert_od, center=true);
-      }
-      for (x = [-2.5:2.5], y = [-0.5, 0.5]) {
-        translate([x * d, y * base_plate_dim_y, 0])
-          rotate([90, 0, 0])
-            cylinder(h=m4_insert_length * 2, d=m4_insert_od, center=true);
+      large_spacer();
+      for_each_hole_bottom() {
+        cylinder(d=m4_insert_od, h=100, center=true);
       }
     }
 
-  translate([0, 0, 20])
+  for (y = [0, busbar_thickness + copper_plate_thickness]) {
+    translate([0, -0.5 * oy + busbar_cutout_depth - y, large_spacer_stack_height / 2])
+      rotate([90, 0, 0])
+        terminal_busbar();
+  }
+
+  for (y = [-0.5, 0.5]) {
+    translate([0, y * 92, large_spacer_stack_height + airgap]) {
+      fan_92x92x38();
+    }
+  }
+
+  module funnel_outer() {
+    hull() {
+      translate([0, 0, airgap - 3]) {
+        for_each_hole_top() {
+          cylinder(d=92 - 82.5, h=3, center=false);
+        }
+      }
+      for_each_hole_bottom() {
+        cylinder(d=8, h=3, center=false);
+      }
+    }
+  }
+
+  module funnel_inner() {
     difference() {
-      cube([ox, oy, 3], center=true);
-      fan_panel();
+      hull() {
+        translate([0, 0, airgap - 3]) {
+          for_each_hole_top() {
+            cylinder(d=92 - 82.5 - 6, h=3, center=false);
+          }
+        }
+        translate([0, 0, -0.1]) {
+          for_each_hole_bottom() {
+            cylinder(d=4.5, h=3, center=false);
+          }
+        }
+      }
+      translate([0, 0, airgap])
+        cube([1000, 1000, 6], center=true);
+      for_each_hole_top() {
+        translate([0, 0, airgap - 3])
+          cylinder(d=m4_insert_od + 6, h=6, center=true);
+      }
     }
+  }
 
-  translate([0, -0.5 * oy, large_spacer_stack_height / 2])
-    rotate([90, 0, 0])
-      busbar();
+  translate([0, 0, large_spacer_stack_height]) {
+    difference() {
+      union() {
+        difference() {
+          funnel_outer();
+          funnel_inner();
+        }
 
-  translate([0, 0, 50]) {
-    fan();
+        intersection() {
+          for_each_hole_bottom() {
+            cylinder(d=8 + 6, h=100);
+          }
+          funnel_outer();
+        }
+      }
+
+      // Holes for the bottom screws
+      for_each_hole_bottom() {
+        cylinder(d=4.5, h=100, center=true);
+        translate([0, 0, 3])
+          cylinder(d=8, h=100);
+      }
+
+      // Holes for the top inserts
+      for_each_hole_top() {
+        cylinder(d=m4_insert_od, h=100, center=true);
+      }
+
+      // Holes for the fan outlet
+      for (y = [-0.5, 0.5]) {
+        translate([0, y * 92, 0])
+          cylinder(d=90, h=100, center=true);
+      }
+    }
   }
 }
 

@@ -16,11 +16,10 @@ use <bulkhead.scad>
 // z towards top
 
 // TODO
-// - Model the bulkhead
+// - Figure out how to route the temperature sensors
+// - Add slots in the panels to route wires
 // - Add the LMU and BMCU
-// - design the top and bottom holders
-//   - mounting holes for the BMS boards
-//   - add mounting to the bulkhead
+// - design the top holders
 // - Make the bottom side panel larger to mount to the bulkhead
 //   - add a slot for the outside vents
 
@@ -32,7 +31,6 @@ rotate([90, 0, 0])
 
 module panel_with_pcbs() {
   module_240();
-  %panels();
   translate([0, -5.5 * d, 81])
     rotate([0, 90, 0])
       rotate([90, 0, 0])
@@ -48,23 +46,18 @@ translate(
   [
     case_dim_x / 2 + 10,
     case_dim_y / 2 + 10,
-    0,
+    -20,
   ]
 ) {
-  panel_with_pcbs();
+  rotate([0, 0, 180])
+    panel_with_pcbs();
 }
-
-translate([32, 34, 300])
-  color("red") cube([92, 92, 38]);
-translate([32, 134, 300])
-  color("red") cube([92, 92, 38]);
-
 
 translate(
   [
     case_dim_x / 2 + 10,
     case_dim_y / 2 + 10 - 258,
-    0,
+    -20,
   ]
 ) {
   panel_with_pcbs();

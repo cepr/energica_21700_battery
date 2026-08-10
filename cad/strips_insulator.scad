@@ -3,7 +3,12 @@ use <base_plate.scad>
 
 module strips_insulator() {
   difference() {
-    base_plate(height=strips_insulator_stack_height, center=true, shorter_end=true);
+    base_plate(
+      height=strips_insulator_stack_height,
+      center=true,
+      shorter_end=true,
+      nickel_passages=true
+    );
     // Copper strips pockets
     for (x = [-2.5:2.5]) {
       translate([x * d, 0, 50]) {

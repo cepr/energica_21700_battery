@@ -40,7 +40,7 @@ module module_60() {
     translate([0, 0, -h / 2 - cell_holder_stack_height - strips_insulator_stack_height / 2 - 3 * exploded])
       strips_insulator();
 
-  *translate([0, 0, h / 2 + copper_plate_thickness + nickel_plate_thickness + 2 * exploded])
+  translate([0, 0, h / 2 + copper_plate_thickness + nickel_plate_thickness + 2 * exploded])
     strips();
 
   // Top cells holder
@@ -49,17 +49,17 @@ module module_60() {
       cell_holder();
 
   // Cells
-  *cell_60();
+  cell_60();
 
   // Separators
-  *separators();
+  separators();
 
   // Bottom cells holder
   translate([0, 0, -h / 2 - cell_holder_stack_height - exploded])
     cell_holder();
 
   // Bottom copper and nickel
-  *rotate([180, 0, 0])
+  rotate([180, 0, 0])
     translate([0, 0, h / 2 + copper_plate_thickness + nickel_plate_thickness + 2 * exploded])
       strips();
 

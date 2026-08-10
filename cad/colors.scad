@@ -9,3 +9,7 @@ module nickel() {
 module pcb() {
   color("#008c32") children();
 }
+
+module clear_acrylic() {
+  color("#ffffff10") children();
+}
