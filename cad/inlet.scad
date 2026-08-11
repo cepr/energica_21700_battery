@@ -3,20 +3,9 @@ use <large_spacer.scad>
 use <terminal_busbar.scad>
 use <fan_92x92x38.scad>
 
-// https://nmbtc.com/wp-content/uploads/parts/documents/12038VE-12R-GUE-4%20data%20sheet.pdf
-// module fan() {
-//   difference() {
-//     cube([120, 120, 38], center=true);
-//     for (x = [-105 / 2, 105 / 2], y = [-105 / 2, 105 / 2]) {
-//       translate([x, y, 0])
-//         cylinder(h=100, d=4.3, center=true);
-//     }
-//   }
-// }
-
 airgap = 15;
 
-module inlet() {
+module inlet(flip_terminals = false) {
   ox = case_dim_x - 2 * external_walls;
   oy = case_dim_y - 2 * external_walls;
 
@@ -44,8 +33,14 @@ module inlet() {
 
   for (y = [0, busbar_thickness + copper_plate_thickness]) {
     translate([0, -0.5 * oy + busbar_cutout_depth - y, large_spacer_stack_height / 2])
-      rotate([90, 0, 0])
-        terminal_busbar();
+      rotate([90, 0, 0]) {
+        if (flip_terminals) {
+          mirror([1, 0, 0])
+            terminal_busbar();
+        } else {
+          terminal_busbar();
+        }
+      }
   }
 
   for (y = [-0.5, 0.5]) {

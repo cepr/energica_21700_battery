@@ -9,11 +9,12 @@ use <inlet.scad>
 /**
  * 240 cells as a 6x10x4 pack, along the z axis, the pack centered at the origin.
  */
-module module_240() {
+module module_240(flip_cells = false, flip_terminals = false) {
   for (z = [-0.5, 0.5]) {
-    translate([0, 0, z * (module_120_height + large_spacer_stack_height + exploded)]) {
-      module_120();
-    }
+    rotate([0, flip_cells ? 180 : 0, 0])
+      translate([0, 0, z * (module_120_height + large_spacer_stack_height + exploded)]) {
+        module_120();
+      }
   }
   rotate([0, 0, 180])
     large_spacer();
@@ -22,14 +23,14 @@ module module_240() {
       rotate([-90, 0, 0])
         intermediate_busbar();
   }
-  panels();
+  *panels();
   translate([0, 0, -module_120_height - large_spacer_stack_height])
-    rotate([180, 0, 0]) outlet();
+    rotate([180, 0, 0]) outlet(flip_terminals=flip_terminals);
 
   
   translate([0, 0, module_120_height + 0.5 * large_spacer_stack_height])
     rotate([0, 0, 180])
-      inlet();
+      inlet(flip_terminals=flip_terminals);
 }
 
 module_240();

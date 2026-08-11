@@ -10,11 +10,6 @@ use <panels.scad>
 use <LiBAL_s-BMS.scad>
 use <bulkhead.scad>
 
-// ISO 8855 Convention:
-// x towards front
-// y towards left
-// z towards top
-
 // TODO
 // - Figure out how to route the temperature sensors
 // - Add slots in the panels to route wires

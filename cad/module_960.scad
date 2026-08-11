@@ -1,12 +1,11 @@
 include <parameters.scad>
 use <module_240.scad>
+use <bulkhead.scad>
 
-/**
- * Change from upright cell (along z axis) to the vehicle convention (ISO 8855 Convention: x towards front, y towards left, z towards top)
- */
-module toVehicleConvention() {
-  rotate([0, 0, -90]) rotate([90, 0, 0]) children();
-}
+// ISO 8855 Convention:
+// x towards front
+// y towards left
+// z towards top
 
 /**
  * Entire battery pack in the vehicle convention, centered at the origin.
@@ -16,18 +15,30 @@ module module_960() {
     translate(
       [
         0,
-        y * (6 * d + bulkhead_y_thickness),
-        z * (10 * d + 4 * cell_isolation + bulkhead_z_thickness),
+        y * (case_dim_x + bulkhead_thickness),
+        z * 258,
       ]
     ) {
-      toVehicleConvention() {
-        module_240();
-      }
+      rotate([z > 0 ? 180 : 0, 0, 0])
+        rotate([0, 0, 90]) {
+          rotate([90, 0, 0]) {
+            translate([0, 0, -20])
+              module_240(flip_cells=z == y, flip_terminals=z == y);
+          }
+        }
     }
   }
+
+  rotate([90, 0, 0])
+    rotate([0, 0, -90])
+      bulkhead();
 }
 
 // Labels
-translate([300, 0, 10]) rotate([90, 0, 0]) scale(3) text("FRONT ->");
+translate([300, 0, 10])
+  rotate([90, 0, 0])
+    linear_extrude(height=10, center=true)
+      scale(3)
+        text("FRONT ->");
 
 module_960();

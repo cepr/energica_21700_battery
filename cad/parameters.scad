@@ -32,8 +32,7 @@ strips_pocket_height = 1;
 
 plates_thickness = copper_plate_thickness + nickel_plate_thickness;
 
-bulkhead_y_thickness = 15;
-bulkhead_z_thickness = 5;
+bulkhead_thickness = 20;
 
 strips_clearance = 0.5;
 holder_pocket_height = 5;
