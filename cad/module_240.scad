@@ -23,7 +23,7 @@ module module_240(flip_cells = false, flip_terminals = false) {
       rotate([-90, 0, 0])
         intermediate_busbar();
   }
-  *panels();
+  panels();
   translate([0, 0, -module_120_height - large_spacer_stack_height])
     rotate([180, 0, 0]) outlet(flip_terminals=flip_terminals);
 

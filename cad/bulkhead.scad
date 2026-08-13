@@ -11,7 +11,7 @@ module bulkhead() {
       }
     }
 
-    for (y1 = [-1.5:1.5]) {
+    for (y1 = [-2.5:2.5]) {
       translate([2, y1 * 70, 0]) {
         hull() {
           for (y = [-0.5, 0.5]) {

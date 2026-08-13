@@ -11,5 +11,5 @@ module pcb() {
 }
 
 module clear_acrylic() {
-  color("#ffffff10") children();
+  color("#ffffffc0") children();
 }

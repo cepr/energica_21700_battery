@@ -1,6 +1,6 @@
 $fn = 64;
 
-h = 70.6; // cell max height
+h = 70.3; // cell max height
 d = 21.5; // cell max diameter
 
 available_y = 19.5 * 25.4;
