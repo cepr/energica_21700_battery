@@ -707,21 +707,21 @@ Edge.Cuts
 100
 AcDbCircle
  10
--37.6499999999999986
+43.
  20
-16.
+-5.5499989999999997
  30
 0
  40
-4.0999999999999996
+5.9999994676108095
 100
 AcDbArc
  50
--180.00000000
+19.97844067
  51
--0.00000000
+160.02155933
   0
-LINE
+ARC
   5
 29
 330
@@ -730,22 +730,22 @@ LINE
 AcDbEntity
   8
 Edge.Cuts
-  6
-CONTINUOUS
 100
-AcDbLine
+AcDbCircle
  10
--41.75
+-43.
  20
-19.
+-5.5499989999999997
  30
 0
- 11
--41.75
- 21
-16.
- 31
-0
+ 40
+5.9999994676108095
+100
+AcDbArc
+ 50
+19.97844067
+ 51
+160.02155933
   0
 LINE
   5
@@ -761,13 +761,111 @@ CONTINUOUS
 100
 AcDbLine
  10
--33.5499999999999972
+-59.75
+ 20
+-3.5
+ 30
+0
+ 11
+-59.75
+ 21
+3.5
+ 31
+0
+  0
+LINE
+  5
+2B
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+-59.75
+ 20
+-3.5
+ 30
+0
+ 11
+-48.6389269999999954
+ 21
+-3.5
+ 31
+0
+  0
+CIRCLE
+  5
+2C
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+100
+AcDbCircle
+ 10
+-53.75
+ 20
+0.
+ 30
+0
+ 40
+1.75
+  0
+LINE
+  5
+2D
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+-43.
+ 20
+28.
+ 30
+0
+ 11
+-59.75
+ 21
+3.5
+ 31
+0
+  0
+LINE
+  5
+2E
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+-41.75
  20
 19.
  30
 0
  11
--33.5499999999999972
+-41.75
  21
 16.
  31
@@ -775,7 +873,7 @@ AcDbLine
   0
 ARC
   5
-2B
+2F
 330
 1A
 100
@@ -801,7 +899,79 @@ AcDbArc
   0
 LINE
   5
-2C
+30
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+-33.5499999999999972
+ 20
+19.
+ 30
+0
+ 11
+-33.5499999999999972
+ 21
+16.
+ 31
+0
+  0
+ARC
+  5
+31
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+100
+AcDbCircle
+ 10
+-37.6499999999999986
+ 20
+16.
+ 30
+0
+ 40
+4.0999999999999996
+100
+AcDbArc
+ 50
+-180.00000000
+ 51
+-0.00000000
+  0
+CIRCLE
+  5
+32
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+100
+AcDbCircle
+ 10
+-32.25
+ 20
+0.
+ 30
+0
+ 40
+1.75
+  0
+LINE
+  5
+33
 330
 1A
 100
@@ -825,101 +995,9 @@ AcDbLine
  31
 0
   0
-LINE
-  5
-2D
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-  6
-CONTINUOUS
-100
-AcDbLine
- 10
-59.75
- 20
-3.5
- 30
-0
- 11
--21.5
- 21
-28.
- 31
-0
-  0
-LINE
-  5
-2E
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-  6
-CONTINUOUS
-100
-AcDbLine
- 10
--59.75
- 20
--3.5
- 30
-0
- 11
--59.75
- 21
-3.5
- 31
-0
-  0
 CIRCLE
   5
-2F
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-100
-AcDbCircle
- 10
--53.75
- 20
-0.
- 30
-0
- 40
-1.75
-  0
-CIRCLE
-  5
-30
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-100
-AcDbCircle
- 10
--32.25
- 20
-0.
- 30
-0
- 40
-1.75
-  0
-CIRCLE
-  5
-31
+34
 330
 1A
 100
@@ -939,7 +1017,7 @@ AcDbCircle
   0
 CIRCLE
   5
-32
+35
 330
 1A
 100
@@ -959,7 +1037,7 @@ AcDbCircle
   0
 CIRCLE
   5
-33
+36
 330
 1A
 100
@@ -977,9 +1055,35 @@ AcDbCircle
  40
 1.75
   0
+LINE
+  5
+37
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+37.3610729999999975
+ 20
+-3.5
+ 30
+0
+ 11
+-37.3610729999999975
+ 21
+-3.5
+ 31
+0
+  0
 CIRCLE
   5
-34
+38
 330
 1A
 100
@@ -999,7 +1103,7 @@ AcDbCircle
   0
 LINE
   5
-35
+39
 330
 1A
 100
@@ -1017,61 +1121,61 @@ AcDbLine
  30
 0
  11
-59.75
+-21.5
  21
--3.5
- 31
-0
-  0
-LINE
-  5
-36
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-  6
-CONTINUOUS
-100
-AcDbLine
- 10
-59.75
- 20
--3.5
- 30
-0
- 11
--59.75
- 21
--3.5
- 31
-0
-  0
-LINE
-  5
-37
-330
-1A
-100
-AcDbEntity
-  8
-Edge.Cuts
-  6
-CONTINUOUS
-100
-AcDbLine
- 10
--43.
- 20
 28.
+ 31
+0
+  0
+LINE
+  5
+3A
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+59.75
+ 20
+3.5
  30
 0
  11
--59.75
+59.75
  21
-3.5
+-3.5
+ 31
+0
+  0
+LINE
+  5
+3B
+330
+1A
+100
+AcDbEntity
+  8
+Edge.Cuts
+  6
+CONTINUOUS
+100
+AcDbLine
+ 10
+59.75
+ 20
+-3.5
+ 30
+0
+ 11
+48.6389269999999954
+ 21
+-3.5
  31
 0
   0
@@ -1093,7 +1197,7 @@ AcDbDictionary
   3
 ACAD_GROUP
 350
-38
+3C
   3
 ACAD_LAYOUT
 350
@@ -1105,7 +1209,7 @@ ACAD_PLOTSTYLENAME
   0
 DICTIONARY
   5
-38
+3C
 330
 20
 100
