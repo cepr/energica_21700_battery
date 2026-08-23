@@ -46,7 +46,7 @@ outlet_walls = 3;
 m3_insert_od = 4.6; // 5mm OD minus some plastic to melt
 m3_insert_length = 4 + 4; // 4 mm more than the insert length
 
-m4_insert_od = 5.3; // this is the diameter of the hole, it must be smaller than the insert’s maximum OD
+m4_insert_od = 5.25; // this is the diameter of the hole, it must be smaller than the insert’s maximum OD
 m4_insert_length = 8; // 2 mm more than the insert length
 
 cell_holder_stack_height = 0.3;

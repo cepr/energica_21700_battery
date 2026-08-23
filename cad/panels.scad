@@ -60,12 +60,10 @@ module small_panel_2d() {
     }
     for (x = [-43, 43], z1 = [-1, 1], z2 = [-1, 1]) {
       translate([x, z1 * module_240_height / 4 + z2 * 73])
-        circle(d=5.25);
+        circle(d=m4_insert_od);
     }
   }
 }
-
-//echo("distance between layers: ", module_60_height + large_spacer_stack_height);
 
 module small_panel() {
   rotate([90, 0, 0])

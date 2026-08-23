@@ -16,5 +16,5 @@ module combo_separator() {
   }
 }
 
-*combo_separator();
-color("yellow") large_spacer_modifier();
+combo_separator();
+*color("yellow") large_spacer_modifier();
