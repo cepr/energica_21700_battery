@@ -1,7 +1,9 @@
 $fn = 64;
 
+shrink_factor = 0.994; // I forgot to calibrate my ASA printer, so I'm using this factor to shrink the model after the fact
+
 h = 70.3; // cell max height
-d = 21.5; // cell max diameter
+d = 21.5 * shrink_factor; // cell max diameter
 
 available_y = 19.5 * 25.4;
 
@@ -15,7 +17,7 @@ external_walls = 3; // acrylic
 base_plate_dim_x = case_dim_x - 2 * external_walls;
 base_plate_dim_y = case_dim_y - 2 * external_walls;
 
-cell_isolation = 1; // minimum separation between cells not in parallel
+cell_isolation = 1 * shrink_factor; // minimum separation between cells not in parallel
 
 plate_disk_dia = 14;
 copper_width = 10;

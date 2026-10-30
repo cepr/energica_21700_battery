@@ -5,6 +5,12 @@ use <fan_92x92x38.scad>
 
 airgap = 15;
 
+show_busbars = true;
+show_fan = false;
+show_large_spacer = true;
+show_funnel = false;
+show_funnel_modifier = false; // modifier for the slicer to make the insert holes stronger
+
 module inlet(flip_terminals = false) {
   ox = case_dim_x - 2 * external_walls;
   oy = case_dim_y - 2 * external_walls;
@@ -23,29 +29,35 @@ module inlet(flip_terminals = false) {
     }
   }
 
-  translate([0, 0, large_spacer_stack_height / 2])
-    difference() {
-      large_spacer();
-      for_each_hole_bottom() {
-        cylinder(d=m4_insert_od, h=100, center=true);
-      }
-    }
-
-  for (y = [0, busbar_thickness + copper_plate_thickness]) {
-    translate([0, -0.5 * oy + busbar_cutout_depth - y, large_spacer_stack_height / 2])
-      rotate([90, 0, 0]) {
-        if (flip_terminals) {
-          mirror([1, 0, 0])
-            terminal_busbar();
-        } else {
-          terminal_busbar();
+  if (show_large_spacer) {
+    translate([0, 0, large_spacer_stack_height / 2])
+      difference() {
+        large_spacer();
+        for_each_hole_bottom() {
+          cylinder(d=m4_insert_od, h=100, center=true);
         }
       }
   }
 
-  for (y = [-0.5, 0.5]) {
-    translate([0, y * 92, large_spacer_stack_height + airgap]) {
-      fan_92x92x38();
+  if (show_busbars) {
+    for (y = [0, busbar_thickness + copper_plate_thickness]) {
+      translate([0, -0.5 * oy + busbar_cutout_depth - y, large_spacer_stack_height / 2])
+        rotate([90, 0, 0]) {
+          if (flip_terminals) {
+            mirror([1, 0, 0])
+              terminal_busbar();
+          } else {
+            terminal_busbar();
+          }
+        }
+    }
+  }
+
+  if (show_fan) {
+    for (y = [-0.5, 0.5]) {
+      translate([0, y * 92, large_spacer_stack_height + airgap]) {
+        fan_92x92x38();
+      }
     }
   }
 
@@ -85,39 +97,51 @@ module inlet(flip_terminals = false) {
     }
   }
 
-  translate([0, 0, large_spacer_stack_height]) {
-    difference() {
-      union() {
-        difference() {
-          funnel_outer();
-          funnel_inner();
-        }
-
-        intersection() {
-          for_each_hole_bottom() {
-            cylinder(d=8 + 6, h=100);
+  if (show_funnel) {
+    translate([0, 0, large_spacer_stack_height]) {
+      difference() {
+        union() {
+          difference() {
+            funnel_outer();
+            funnel_inner();
           }
-          funnel_outer();
+
+          intersection() {
+            for_each_hole_bottom() {
+              cylinder(d=8 + 6, h=100);
+            }
+            funnel_outer();
+          }
+        }
+
+        // Holes for the bottom screws
+        for_each_hole_bottom() {
+          cylinder(d=4.5, h=100, center=true);
+          translate([0, 0, 3])
+            cylinder(d=8, h=100);
+        }
+
+        // Holes for the top inserts
+        for_each_hole_top() {
+          cylinder(d=m4_insert_od, h=100, center=true);
+        }
+
+        // Holes for the fan outlet
+        for (y = [-0.5, 0.5]) {
+          translate([0, y * 92, 0])
+            cylinder(d=90, h=100, center=true);
         }
       }
+    }
+  }
 
-      // Holes for the bottom screws
-      for_each_hole_bottom() {
-        cylinder(d=4.5, h=100, center=true);
-        translate([0, 0, 3])
-          cylinder(d=8, h=100);
-      }
+  if (show_funnel_modifier) {
+    for_each_hole_bottom() {
+      cylinder(d=14, h=100, center=true);
+    }
 
-      // Holes for the top inserts
-      for_each_hole_top() {
-        cylinder(d=m4_insert_od, h=100, center=true);
-      }
-
-      // Holes for the fan outlet
-      for (y = [-0.5, 0.5]) {
-        translate([0, y * 92, 0])
-          cylinder(d=90, h=100, center=true);
-      }
+    for_each_hole_top() {
+      cylinder(d=12, h=100, center=true);
     }
   }
 }
